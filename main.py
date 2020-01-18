@@ -48,6 +48,15 @@ bulletX_Change = 0
 bulletY_Change = 10
 bullet_state = "ready"
 
+# Game Over
+game_font = pg.font.Font('freesansbold.ttf', 64)
+
+
+def game_over_text():
+    game_over = game_font.render("Game Over!", True, (0, 255, 0))
+    screen.blit(game_over, (200, 250))
+
+
 # Score
 score = 0
 font = pg.font.Font('freesansbold.ttf', 32)
@@ -116,6 +125,12 @@ while running:
         playerX = 736
     # Checking boundary of enemy and movement
     for i in range(num_of_enemies):
+        # Game Over
+        if enemyY[i] > 440:
+            for j in range(num_of_enemies):
+                enemyY[j] = 2000
+            game_over_text()
+            break
         enemyX[i] += enemyX_Change[i]
         if enemyX[i] <= 0:
             enemyX_Change[i] = 2
