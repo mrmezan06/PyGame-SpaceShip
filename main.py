@@ -1,9 +1,12 @@
 import pygame as pg
+import random
 
 # Initializing py game
 pg.init()
 # Screen set
 screen = pg.display.set_mode((800, 600))
+# Adding Background
+bg = pg.image.load('background.png')
 
 # Title and Icon
 pg.display.set_caption("Space X")
@@ -18,9 +21,10 @@ playerX_Change = 0
 
 # Player
 enemyImg = pg.image.load('enemy.png')
-enemyX = 370
-enemyY = 50
-enemyX_Change = 0
+enemyX = random.randint(0, 800)
+enemyY = random.randint(50, 150)
+enemyX_Change = 0.1
+enemyY_Change = 40
 
 
 def player(x, y):
@@ -35,7 +39,8 @@ def enemy(x, y):
 running = True
 while running:
     screen.fill((0, 0, 0))
-
+    # background image
+    screen.blit(bg, (0, 0))
     for event in pg.event.get():
         if event.type == pg.QUIT:
             running = False
@@ -57,6 +62,16 @@ while running:
     # Spaceship size 64 x 64
     if playerX > 736:
         playerX = 736
+    # Checking boundary of enemy
+    enemyX += enemyX_Change
+    if enemyX <= 0:
+        enemyX_Change = 0.1
+        enemyY += enemyY_Change
+    # Spaceship size 64 x 64
+    if enemyX > 736:
+        enemyX_Change = -0.1
+        enemyY += enemyY_Change
+
     player(playerX, playerY)
     enemy(enemyX, enemyY)
     # Each Time game window should update
