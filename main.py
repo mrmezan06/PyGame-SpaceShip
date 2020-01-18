@@ -16,9 +16,19 @@ playerX = 370
 playerY = 480
 playerX_Change = 0
 
+# Player
+enemyImg = pg.image.load('enemy.png')
+enemyX = 370
+enemyY = 50
+enemyX_Change = 0
+
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
+
+
+def enemy(x, y):
+    screen.blit(enemyImg, (x, y))
 
 
 # Game Loop
@@ -48,5 +58,6 @@ while running:
     if playerX > 736:
         playerX = 736
     player(playerX, playerY)
+    enemy(enemyX, enemyY)
     # Each Time game window should update
     pg.display.update()
