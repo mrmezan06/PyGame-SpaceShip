@@ -1,6 +1,7 @@
 import pygame as pg
 import random
 import math
+from pygame import mixer
 
 # Initializing py game
 pg.init()
@@ -8,6 +9,9 @@ pg.init()
 screen = pg.display.set_mode((800, 600))
 # Adding Background
 bg = pg.image.load('background.png')
+# background sound
+mixer.music.load('background.wav')
+mixer.music.play(-1)
 
 # Title and Icon
 pg.display.set_caption("Space X")
@@ -31,7 +35,7 @@ for i in range(num_of_enemies):
     enemyImg.append(pg.image.load('enemy.png'))
     enemyX.append(random.randint(0, 735))
     enemyY.append(random.randint(50, 150))
-    enemyX_Change.append(0.1)
+    enemyX_Change.append(2)
     enemyY_Change.append(40)
 
 # Bullet
@@ -41,7 +45,7 @@ bulletImg = pg.image.load('bullet.png')
 bulletX = 0
 bulletY = 480
 bulletX_Change = 0
-bulletY_Change = 1
+bulletY_Change = 10
 bullet_state = "ready"
 
 # Score
@@ -91,12 +95,13 @@ while running:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_LEFT:
                 # print("Left Arrow Pressed!")
-                playerX_Change = -0.2
+                playerX_Change = -3
             if event.key == pg.K_RIGHT:
                 # print("Right Arrow Pressed!")
-                playerX_Change = 0.2
+                playerX_Change = 3
             if event.key == pg.K_SPACE:
                 if bullet_state == "ready":
+                    mixer.Sound('laser.wav').play()
                     bulletX = playerX
                     fire_bullet(bulletX, bulletY)
         if event.type == pg.KEYUP:
@@ -113,16 +118,17 @@ while running:
     for i in range(num_of_enemies):
         enemyX[i] += enemyX_Change[i]
         if enemyX[i] <= 0:
-            enemyX_Change[i] = 0.1
+            enemyX_Change[i] = 2
             enemyY[i] += enemyY_Change[i]
         # Spaceship size 64 x 64
         elif enemyX[i] > 736:
-            enemyX_Change[i] = -0.1
+            enemyX_Change[i] = -2
             enemyY[i] += enemyY_Change[i]
 
         # Collided or not
         collision = isCollided(enemyX[i], enemyY[i], bulletX, bulletY)
         if collision:
+            mixer.Sound('explosion.wav').play()
             bulletY = 480
             bullet_state = "ready"
             score += 1
