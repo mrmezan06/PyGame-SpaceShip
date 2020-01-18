@@ -46,6 +46,14 @@ bullet_state = "ready"
 
 # Score
 score = 0
+font = pg.font.Font('freesansbold.ttf', 32)
+textX = 10
+textY = 10
+
+
+def showScore(x, y):
+    scr = font.render("Score : " + str(score), True, (0, 255, 0))
+    screen.blit(scr, (x, y))
 
 
 def player(x, y):
@@ -134,6 +142,6 @@ while running:
         bulletY -= bulletY_Change
 
     player(playerX, playerY)
-
+    showScore(textX, textY)
     # Each Time game window should update
     pg.display.update()
