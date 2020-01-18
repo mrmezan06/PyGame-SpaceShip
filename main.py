@@ -21,11 +21,18 @@ playerY = 480
 playerX_Change = 0
 
 # Enemy
-enemyImg = pg.image.load('enemy.png')
-enemyX = random.randint(0, 735)
-enemyY = random.randint(50, 150)
-enemyX_Change = 0.1
-enemyY_Change = 40
+enemyImg = []
+enemyX = []
+enemyY = []
+enemyX_Change = []
+enemyY_Change = []
+num_of_enemies = 6
+for i in range(num_of_enemies):
+    enemyImg.append(pg.image.load('enemy.png'))
+    enemyX.append(random.randint(0, 735))
+    enemyY.append(random.randint(50, 150))
+    enemyX_Change.append(0.1)
+    enemyY_Change.append(40)
 
 # Bullet
 # ready - invisible bullet
@@ -45,8 +52,8 @@ def player(x, y):
     screen.blit(playerImg, (x, y))
 
 
-def enemy(x, y):
-    screen.blit(enemyImg, (x, y))
+def enemy(x, y, i):
+    screen.blit(enemyImg[i], (x, y))
 
 
 def fire_bullet(x, y):
@@ -94,15 +101,28 @@ while running:
     # Spaceship size 64 x 64
     if playerX > 736:
         playerX = 736
-    # Checking boundary of enemy
-    enemyX += enemyX_Change
-    if enemyX <= 0:
-        enemyX_Change = 0.1
-        enemyY += enemyY_Change
-    # Spaceship size 64 x 64
-    if enemyX > 736:
-        enemyX_Change = -0.1
-        enemyY += enemyY_Change
+    # Checking boundary of enemy and movement
+    for i in range(num_of_enemies):
+        enemyX[i] += enemyX_Change[i]
+        if enemyX[i] <= 0:
+            enemyX_Change[i] = 0.1
+            enemyY[i] += enemyY_Change[i]
+        # Spaceship size 64 x 64
+        elif enemyX[i] > 736:
+            enemyX_Change[i] = -0.1
+            enemyY[i] += enemyY_Change[i]
+
+        # Collided or not
+        collision = isCollided(enemyX[i], enemyY[i], bulletX, bulletY)
+        if collision:
+            bulletY = 480
+            bullet_state = "ready"
+            score += 1
+            enemyX[i] = random.randint(0, 735)
+            enemyY[i] = random.randint(50, 150)
+            print(score)
+
+        enemy(enemyX[i], enemyY[i], i)
 
     # Bullet movement
     if bulletY <= 0:
@@ -113,17 +133,7 @@ while running:
         fire_bullet(bulletX, bulletY)
         bulletY -= bulletY_Change
 
-    # Collided or not
-    collision = isCollided(enemyX, enemyY, bulletX, bulletY)
-    if collision:
-        bulletY = 480
-        bullet_state = "ready"
-        score += 1
-        enemyX = random.randint(0, 735)
-        enemyY = random.randint(50, 150)
-        print(score)
-
     player(playerX, playerY)
-    enemy(enemyX, enemyY)
+
     # Each Time game window should update
     pg.display.update()
